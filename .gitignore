@@ -1,0 +1,19 @@
+# Local runtime config
+config/site.config.js
+_private/status.env
+skins/class/config.php
+
+# BaoTa / PHP runtime restrictions
+.user.ini
+skins/.user.ini
+
+# Backups
+*.bak
+*.bak.*
+*.backup
+*.orig
+
+# IDE / OS
+.DS_Store
+.idea/
+.vscode/
