@@ -4,6 +4,8 @@
 
 本项目用于展示 CS2 服务器信息，提供 Steam 一键加入、服务器状态检测、WeaponPaints 皮肤入口、服务器密码提示等功能。
 
+![首页截图](assets/preview.png)
+
 > 默认说明语言为中文，英文说明见下方 [English Version](#english-version)。
 
 ## 功能特性
@@ -189,7 +191,7 @@ See `NOTICE.md` for attribution details.
 A lightweight homepage for a private Counter-Strike 2 server.
 
 This project provides a simple public landing page for players, with server status checking, Steam join support, WeaponPaints entry, and private configuration separation.
-
+![首页截图](assets/preview.png)
 ## Features
 
 * Steam one-click join button
