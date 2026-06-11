@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  <link rel="shortcut icon" type="image/png" href="/assets/logo.png">
+  <link rel="apple-touch-icon" href="/assets/logo.png">
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>CS2 Server Homepage</title>
+  <script src="/config/site.config.js"></script>
+
+  <style>
+    :root {
+      --bg: url("./assets/cs2-bg.png");
+      --orange: #ff8a00;
+      --orange-dark: #ff3d00;
+      --green: #38ff88;
+      --red: #ff4d4d;
+      --yellow: #ffb13b;
+      --text: #f7f7f8;
+      --muted: #b4bac8;
+      --line: rgba(255,255,255,.14);
+      --glass: rgba(8,10,16,.62);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Arial, "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: #05070c;
+    }
+
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size: 52px 52px;
+      opacity: .08;
+      mask-image: linear-gradient(to bottom, black, transparent 88%);
+      animation: cs2GridDrift 22s linear infinite;
+    }
+
+    @keyframes cs2GridDrift {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(52px, 52px, 0); }
+    }
+
+    .cs2-bg-motion {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background: #05070c;
+    }
+
+    .cs2-bg-motion::before {
+      content: "";
+      position: absolute;
+      inset: -7%;
+      background-image: var(--bg);
+      background-size: cover;
+      background-position: center;
+      opacity: .62;
+      filter: contrast(1.08) saturate(1.10);
+      transform: scale(1.06);
+      animation: cs2BgFloat 28s ease-in-out infinite alternate;
+      will-change: transform, background-position;
+    }
+
+    .cs2-bg-motion::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 72% 28%, rgba(255, 112, 0, .30), transparent 30%),
+        radial-gradient(circle at 18% 76%, rgba(0, 145, 255, .20), transparent 34%),
+        linear-gradient(90deg, rgba(3,5,10,.98) 0%, rgba(3,5,10,.78) 44%, rgba(3,5,10,.52) 100%),
+        linear-gradient(0deg, rgba(0,0,0,.56), transparent 42%, rgba(0,0,0,.22));
+    }
+
+    @keyframes cs2BgFloat {
+      0% {
+        transform: scale(1.06) translate3d(-1.2%, -0.8%, 0);
+        background-position: 45% 50%;
+      }
+      100% {
+        transform: scale(1.14) translate3d(1.4%, 0.9%, 0);
+        background-position: 58% 52%;
+      }
+    }
+
+    .cs2-particles {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: .42;
+    }
+
+    .cs2-particles span {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(255, 184, 88, .78);
+      box-shadow: 0 0 16px rgba(255, 145, 0, .70);
+      opacity: 0;
+      animation: cs2ParticleFloat 18s linear infinite;
+    }
+
+    .cs2-particles span:nth-child(1) { left: 11%; top: 82%; animation-duration: 20s; }
+    .cs2-particles span:nth-child(2) { left: 28%; top: 70%; animation-duration: 18s; animation-delay: -2s; }
+    .cs2-particles span:nth-child(3) { left: 47%; top: 88%; animation-duration: 22s; animation-delay: -5s; }
+    .cs2-particles span:nth-child(4) { left: 66%; top: 76%; animation-duration: 19s; animation-delay: -3s; }
+    .cs2-particles span:nth-child(5) { left: 82%; top: 80%; animation-duration: 21s; animation-delay: -6s; }
+    .cs2-particles span:nth-child(6) { left: 92%; top: 64%; animation-duration: 17s; animation-delay: -4s; }
+
+    @keyframes cs2ParticleFloat {
+      0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
+      14% { opacity: .9; }
+      78% { opacity: .68; }
+      100% { transform: translate3d(-34px, -360px, 0) scale(.35); opacity: 0; }
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 56px clamp(22px, 6vw, 96px);
+      position: relative;
+      z-index: 3;
+    }
+
+    .hero {
+      width: min(900px, 100%);
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 14px;
+      border: 1px solid rgba(255,138,0,.42);
+      border-radius: 999px;
+      background: rgba(255,138,0,.13);
+      color: #ffc27d;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      box-shadow:
+        0 0 0 1px rgba(255,138,0,.05),
+        0 12px 44px rgba(255,138,0,.10);
+    }
+
+    .badge-chip {
+      min-width: 34px;
+      height: 22px;
+      padding: 0 8px;
+      border-radius: 7px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 138, 0, .18);
+      border: 1px solid rgba(255, 138, 0, .48);
+      color: #ffd29a;
+      font-size: 11px;
+      font-weight: 1000;
+      letter-spacing: .04em;
+      box-shadow: inset 0 0 18px rgba(255, 138, 0, .10);
+    }
+
+    h1 {
+      margin: 30px 0 8px;
+      font-size: clamp(54px, 10vw, 124px);
+      line-height: .88;
+      letter-spacing: -0.08em;
+      text-shadow:
+        0 18px 70px rgba(0,0,0,.72),
+        0 0 24px rgba(255,255,255,.08);
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: clamp(24px, 4vw, 46px);
+      line-height: 1.12;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+      text-shadow: 0 12px 42px rgba(0,0,0,.62);
+    }
+
+    .panel {
+      width: min(720px, 100%);
+      margin-top: 36px;
+      padding: 18px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.16);
+      background:
+        linear-gradient(180deg, rgba(20,25,34,.68), rgba(8,10,16,.62));
+      box-shadow:
+        0 30px 100px rgba(0,0,0,.48),
+        inset 0 1px 0 rgba(255,255,255,.06);
+      backdrop-filter: blur(18px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,138,0,.58), rgba(255,255,255,.18), transparent);
+      opacity: .8;
+      pointer-events: none;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      border-radius: inherit;
+      box-shadow:
+        inset 0 0 0 1px rgba(255,255,255,.03),
+        inset 0 0 34px rgba(255,138,0,.05);
+    }
+
+    .server-status {
+      margin-bottom: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.13);
+      background:
+        linear-gradient(90deg, rgba(18,24,34,.82), rgba(12,15,22,.72));
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    .server-status .left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .server-status.running {
+      border-color: rgba(56,255,136,.30);
+      background:
+        linear-gradient(90deg, rgba(18,36,30,.72), rgba(12,15,22,.72));
+    }
+
+    .server-status.stopped {
+      border-color: rgba(255,77,77,.30);
+      background:
+        linear-gradient(90deg, rgba(44,22,24,.72), rgba(12,15,22,.72));
+    }
+
+    .server-status.unknown {
+      border-color: rgba(255,255,255,.13);
+    }
+
+    .status-dot {
+      flex: 0 0 auto;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #7f8797;
+      box-shadow: 0 0 12px rgba(255,255,255,.22);
+    }
+
+    .server-status.running .status-dot {
+      background: var(--green);
+      box-shadow: 0 0 14px rgba(56,255,136,.62);
+    }
+
+    .server-status.stopped .status-dot {
+      background: var(--red);
+      box-shadow: 0 0 14px rgba(255,77,77,.58);
+    }
+
+    .server-status.restarting .status-dot {
+      background: var(--yellow);
+      box-shadow: 0 0 14px rgba(255,177,59,.58);
+    }
+
+    .status-main {
+      font-weight: 1000;
+      color: #fff;
+      white-space: normal;
+    }
+
+    .status-sub {
+      color: #aeb6c7;
+      font-size: 13px;
+      margin-top: 2px;
+      white-space: normal;
+    }
+
+    .status-time {
+      color: #7f8797;
+      font-size: 12px;
+      opacity: .78;
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn {
+      height: 56px;
+      border: 0;
+      border-radius: 16px;
+      padding: 0 18px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 900;
+      color: #101218;
+      background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+      box-shadow: 0 14px 36px rgba(255,91,0,.36);
+      transition: transform .18s ease, filter .18s ease, border-color .18s ease, background .18s ease;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: .02em;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+    }
+
+    .btn:not(.secondary)::after {
+      content: "";
+      position: absolute;
+      inset: -40% -80%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.34), transparent);
+      transform: translateX(-80%) rotate(12deg);
+      animation: cs2BtnFlash 5.6s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes cs2BtnFlash {
+      0%, 55% { transform: translateX(-80%) rotate(12deg); }
+      72%, 100% { transform: translateX(80%) rotate(12deg); }
+    }
+
+    .btn.secondary {
+      color: #f4f5f8;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.16);
+      box-shadow: none;
+    }
+
+    .btn.secondary:hover {
+      border-color: rgba(255,138,0,.30);
+      background: rgba(255,138,0,.09);
+    }
+
+    .server {
+      margin-top: 14px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: #d8dce7;
+      font-size: 14px;
+    }
+
+    .server code {
+      color: #ffc27d;
+      font-family: Consolas, Monaco, monospace;
+      font-weight: 800;
+    }
+
+    #copyStatus {
+      color: #d8dce7;
+      white-space: nowrap;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 26px;
+    }
+
+    .tag {
+      padding: 9px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.06);
+      color: #c8ceda;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .join-notice {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(0,0,0,.58);
+      backdrop-filter: blur(10px);
+    }
+
+    .join-notice[hidden] {
+      display: none;
+    }
+
+    .join-card {
+      width: min(560px, 100%);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.16);
+      background:
+        radial-gradient(circle at 16% 0%, rgba(255,138,0,.18), transparent 36%),
+        linear-gradient(180deg, rgba(20,25,34,.96), rgba(8,10,16,.94));
+      box-shadow:
+        0 30px 110px rgba(0,0,0,.62),
+        inset 0 1px 0 rgba(255,255,255,.06);
+      overflow: hidden;
+    }
+
+    .join-card-head {
+      padding: 20px 22px 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .join-card-title {
+      font-size: 20px;
+      font-weight: 1000;
+      margin: 0;
+    }
+
+    .join-card-tag {
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(255,138,0,.12);
+      border: 1px solid rgba(255,138,0,.35);
+      color: #ffc27d;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .join-card-body {
+      padding: 18px 22px 22px;
+      color: #d8dce7;
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .join-card-body p {
+      margin: 0 0 12px;
+    }
+
+    .join-card-body code {
+      padding: 3px 6px;
+      border-radius: 7px;
+      color: #ffd29a;
+      background: rgba(255,138,0,.12);
+      border: 1px solid rgba(255,138,0,.22);
+      font-family: Consolas, Monaco, monospace;
+      font-weight: 800;
+    }
+
+    .notice-check {
+      margin-top: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #cbd2df;
+      user-select: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .notice-check input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--orange);
+    }
+
+    .join-card-actions {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .join-card-actions .btn {
+      height: 50px;
+      font-size: 14px;
+    }
+
+    .btn.ghost {
+      color: #d8dce7;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: none;
+    }
+
+    .btn.ghost::after {
+      display: none;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        align-items: flex-end;
+        padding-top: 80px;
+        padding-bottom: 34px;
+      }
+
+      .panel {
+        width: 100%;
+      }
+
+      .actions {
+        grid-template-columns: 1fr;
+      }
+
+      .status-time {
+        width: 100%;
+        padding-left: 22px;
+      }
+
+      .cs2-particles {
+        display: none;
+      }
+
+      .join-card-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      body::before,
+      .cs2-bg-motion::before,
+      .cs2-particles span,
+      .btn:not(.secondary)::after {
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cs2-bg-motion" aria-hidden="true"></div>
+  <div class="cs2-particles" aria-hidden="true">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <main class="page">
+    <section class="hero">
+      <div class="badge">
+        <span class="badge-chip">CS2</span>
+        <span id="badgeText">CS2 SERVER</span>
+      </div>
+
+      <h1 id="heroTitle">CS2 SERVER</h1>
+
+      <p class="subtitle" id="heroSubtitle">朋友联机，快乐开黑。</p>
+
+      <div class="panel">
+        <div class="server-status unknown" id="serverStatus">
+          <div class="left">
+            <span class="status-dot"></span>
+            <div>
+              <div class="status-main">服务器状态：检测中</div>
+              <div class="status-sub">正在读取 CS2 服务状态...</div>
+            </div>
+          </div>
+          <div class="status-time" id="serverStatusTime">--</div>
+        </div>
+
+        <div class="actions">
+          <a class="btn" id="joinBtn" href="#">启动 CS2 并加入服务器</a>
+          <a class="btn secondary" id="skinsBtn" href="/skins/" target="_blank" rel="noopener">进入武器库设置皮肤</a>
+          <button class="btn secondary" id="copyBtn" type="button">复制连接命令</button>
+        </div>
+
+        <div class="server">
+          <span>服务器：<code id="serverText">SERVER:PORT</code></span>
+          <span id="copyStatus">Ready</span>
+        </div>
+      </div>
+
+      <div class="tags" id="tagList">
+        <span class="tag">Friends Only</span>
+        <span class="tag">CS2</span>
+        <span class="tag">Weapon Skins</span>
+        <span class="tag">Private Server</span>
+      </div>
+    </section>
+  </main>
+
+  <div class="join-notice" id="joinNotice" hidden role="dialog" aria-modal="true" aria-labelledby="joinNoticeTitle">
+    <div class="join-card">
+      <div class="join-card-head">
+        <h2 class="join-card-title" id="joinNoticeTitle">加入前提示</h2>
+        <span class="join-card-tag" id="joinNoticeTag">温馨提醒</span>
+      </div>
+      <div class="join-card-body">
+        <p>如果 Steam 启动后无法直接进入服务器，说明服务器需要密码。</p>
+        <p>请向 <strong id="contactNameText">管理员</strong> 索要密码。进入 CS2 后按 <code>~</code> 打开控制台，输入 <code>password 密码</code> 并回车 再点击<code>继续加入</code>  即可。</p>
+        <p>或输入连接命令：<code id="noticeConnectCommand">connect SERVER:PORT</code> 回车。</p>
+        <blockquote style="
+          margin: 12px 0 14px;
+          padding: 10px 12px;
+          border-left: 3px solid rgba(255,138,0,.78);
+          border-radius: 10px;
+          background: rgba(255,138,0,.10);
+          color: #d8dce7;
+        ">
+          小提示：默认控制台按键通常是 <code>~</code>。如果按下没有反应，可能是按键被占用，或者控制台没有启用。可以在 CS2 设置里启用开发者控制台，并重新绑定一个控制台按键。
+        </blockquote>
+
+        <label class="notice-check">
+          <input type="checkbox" id="dontShowJoinNotice">
+          <span>我知道了！下次启动不再提醒</span>
+        </label>
+
+        <div class="join-card-actions">
+          <button class="btn" id="continueJoinBtn" type="button">继续加入</button>
+          <button class="btn ghost" id="closeJoinNoticeBtn" type="button">先不启动</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PAGE_CONFIG = window.CS2_PAGE_CONFIG || {};
+
+    const STEAM_APP_ID = String(PAGE_CONFIG.server?.steamAppId || "730");
+    const SERVER_DOMAIN = PAGE_CONFIG.server?.publicHost || location.hostname;
+    const SERVER_PORT = String(PAGE_CONFIG.server?.publicPort || "27015");
+    const SERVER_ADDRESS = `${SERVER_DOMAIN}:${SERVER_PORT}`;
+    const JOIN_NOTICE_KEY = PAGE_CONFIG.notice?.storageKey || "cs2.homepage.join_notice_ok.v1";
+
+    const joinBtn = document.getElementById("joinBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const serverText = document.getElementById("serverText");
+    const copyStatus = document.getElementById("copyStatus");
+
+    const joinNotice = document.getElementById("joinNotice");
+    const continueJoinBtn = document.getElementById("continueJoinBtn");
+    const closeJoinNoticeBtn = document.getElementById("closeJoinNoticeBtn");
+    const dontShowJoinNotice = document.getElementById("dontShowJoinNotice");
+    const noticeConnectCommand = document.getElementById("noticeConnectCommand");
+
+    const heroTitle = document.getElementById("heroTitle");
+    const heroSubtitle = document.getElementById("heroSubtitle");
+    const badgeText = document.getElementById("badgeText");
+    const skinsBtn = document.getElementById("skinsBtn");
+    const tagList = document.getElementById("tagList");
+    const contactNameText = document.getElementById("contactNameText");
+    const joinNoticeTitle = document.getElementById("joinNoticeTitle");
+    const joinNoticeTag = document.getElementById("joinNoticeTag");
+
+    function applyPageConfig() {
+      const brand = PAGE_CONFIG.brand || {};
+      const skins = PAGE_CONFIG.skins || {};
+      const notice = PAGE_CONFIG.notice || {};
+
+      document.title = brand.pageTitle || "CS2 Server Homepage";
+
+      if (heroTitle) heroTitle.textContent = brand.heroTitle || "CS2 SERVER";
+      if (heroSubtitle) heroSubtitle.textContent = brand.subtitle || "朋友联机，快乐开黑。";
+      if (badgeText) badgeText.textContent = brand.badge || "CS2 SERVER";
+
+      if (skinsBtn) {
+        skinsBtn.textContent = skins.label || "进入武器库设置皮肤";
+        skinsBtn.href = skins.path || "/skins/";
+        skinsBtn.style.display = skins.enabled === false ? "none" : "";
+      }
+
+      if (contactNameText) contactNameText.textContent = notice.contactName || "管理员";
+      if (joinNoticeTitle) joinNoticeTitle.textContent = notice.title || "加入前提示";
+      if (joinNoticeTag) joinNoticeTag.textContent = notice.tag || "温馨提醒";
+
+      if (tagList && Array.isArray(PAGE_CONFIG.tags)) {
+        tagList.innerHTML = PAGE_CONFIG.tags
+          .map(tag => `<span class="tag">${String(tag).replace(/[&<>"']/g, s => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            "\"": "&quot;",
+            "'": "&#39;"
+          }[s]))}</span>`)
+          .join("");
+      }
+    }
+
+    applyPageConfig();
+
+    function buildSteamJoinUrl() {
+      return `steam://rungameid/${STEAM_APP_ID}//+connect%20${encodeURIComponent(SERVER_ADDRESS)}`;
+    }
+
+    function copyText(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(text);
+      }
+
+      return new Promise((resolve, reject) => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "readonly");
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "0";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+
+        try {
+          const ok = document.execCommand("copy");
+          document.body.removeChild(ta);
+          ok ? resolve() : reject(new Error("copy failed"));
+        } catch (err) {
+          document.body.removeChild(ta);
+          reject(err);
+        }
+      });
+    }
+
+    function noticeAccepted() {
+      try {
+        return localStorage.getItem(JOIN_NOTICE_KEY) === "1";
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function saveNoticeAccepted() {
+      try {
+        localStorage.setItem(JOIN_NOTICE_KEY, "1");
+      } catch (e) {}
+    }
+
+    function openJoinNotice() {
+      if (!joinNotice) return;
+      joinNotice.hidden = false;
+      setTimeout(() => continueJoinBtn?.focus(), 20);
+    }
+
+    function closeJoinNotice() {
+      if (!joinNotice) return;
+      joinNotice.hidden = true;
+    }
+
+    function launchSteam() {
+      copyStatus.textContent = "正在启动 CS2...";
+      window.location.href = buildSteamJoinUrl();
+      setTimeout(() => {
+        copyStatus.textContent = "已请求启动";
+      }, 1800);
+    }
+
+    const consoleCommand = `connect ${SERVER_ADDRESS}`;
+
+    serverText.textContent = SERVER_ADDRESS;
+    if (noticeConnectCommand) noticeConnectCommand.textContent = consoleCommand;
+    joinBtn.href = buildSteamJoinUrl();
+
+    joinBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      if (noticeAccepted()) {
+        launchSteam();
+        return;
+      }
+
+      openJoinNotice();
+    });
+
+    continueJoinBtn?.addEventListener("click", () => {
+      if (dontShowJoinNotice?.checked) {
+        saveNoticeAccepted();
+      }
+
+      closeJoinNotice();
+      launchSteam();
+    });
+
+    closeJoinNoticeBtn?.addEventListener("click", closeJoinNotice);
+
+    joinNotice?.addEventListener("click", (event) => {
+      if (event.target === joinNotice) {
+        closeJoinNotice();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && joinNotice && !joinNotice.hidden) {
+        closeJoinNotice();
+      }
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await copyText(consoleCommand);
+        copyStatus.textContent = "已复制";
+      } catch (e) {
+        copyStatus.textContent = consoleCommand;
+      }
+    });
+  </script>
+
+  <script>
+    let serverStatusTimer = null;
+
+    async function refreshServerStatus() {
+      const box = document.getElementById("serverStatus");
+      if (!box) return;
+
+      const main = box.querySelector(".status-main");
+      const sub = box.querySelector(".status-sub");
+      const time = document.getElementById("serverStatusTime");
+
+      try {
+        const res = await fetch("/api/server-status.php?t=" + Date.now(), {
+          cache: "no-store"
+        });
+
+        const data = await res.json();
+        const status = data.status || (data.online ? "running" : "unknown");
+        const label = data.label || data.status_text || data.statusText || "未知";
+        const text = data.text || data.sub || data.message || "暂时无法读取服务器状态";
+
+        box.className = "server-status " + status;
+        main.textContent = data.main || ("服务器状态：" + label);
+        sub.textContent = text;
+        time.textContent = data.checked_at || "";
+      } catch (e) {
+        box.className = "server-status unknown";
+        main.textContent = "服务器状态：未知";
+        sub.textContent = "状态接口暂时不可用";
+        time.textContent = "";
+      }
+    }
+
+    function startServerStatusRefresh() {
+      refreshServerStatus();
+      if (serverStatusTimer) clearInterval(serverStatusTimer);
+      serverStatusTimer = setInterval(refreshServerStatus, 60000);
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        if (serverStatusTimer) clearInterval(serverStatusTimer);
+        serverStatusTimer = null;
+      } else {
+        startServerStatusRefresh();
+      }
+    });
+
+    startServerStatusRefresh();
+  </script>
+</body>
+</html>

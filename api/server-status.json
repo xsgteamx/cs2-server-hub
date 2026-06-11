@@ -1,0 +1,8 @@
+{
+  "status": "stopped",
+  "label": "已停服",
+  "text": "服务器当前未运行。",
+  "active": "inactive",
+  "sub": "dead",
+  "checked_at": "2026-06-11 16:46:01"
+}
